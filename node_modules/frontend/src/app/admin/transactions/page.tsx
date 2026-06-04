@@ -153,6 +153,7 @@ export default function AdminTransactionsPage() {
     fetchPayments();
 
     const socket = io(API_URL, {
+      transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000

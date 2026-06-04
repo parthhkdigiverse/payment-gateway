@@ -203,14 +203,14 @@ export default function ApiKeysPage() {
 
               <div className="flex items-center justify-between md:justify-end gap-6 md:gap-8 pt-4 md:pt-0 border-t md:border-t-0 border-border/50">
                 <div className="grid grid-cols-2 gap-6 md:flex md:gap-8">
-                  <div>
+                  {/* <div>
                     <p className="text-[9px] font-bold text-muted uppercase tracking-wider mb-1">Status</p>
                     <p className="font-bold text-green-600 text-[10px] md:text-xs">Healthy</p>
                   </div>
                   <div>
                     <p className="text-[9px] font-bold text-muted uppercase tracking-wider mb-1">Integration</p>
                     <p className="font-bold text-secondary text-[10px] md:text-xs">Live</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

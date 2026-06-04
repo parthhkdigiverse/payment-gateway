@@ -25,12 +25,12 @@ export default function MerchantDashboard() {
         setError(null);
         // Assuming there is a stats endpoint or we can gracefully handle failure
         const res = await apiFetch(`/merchant/stats`);
-        
+
         if (res.status === 401 || res.status === 403) {
           setError("Your session has expired or you are not authorized.");
           return;
         }
-        
+
         if (res.ok) {
           const data = await res.json();
           setStats(data);
@@ -55,7 +55,7 @@ export default function MerchantDashboard() {
         setIsLoading(false);
       }
     };
-    
+
     fetchStats();
   }, []);
 
@@ -86,8 +86,8 @@ export default function MerchantDashboard() {
           <h1 className="text-xl md:text-2xl font-bold text-secondary tracking-tight">Merchant Dashboard</h1>
           <p className="text-xs md:text-sm text-muted">Overview of your payment activity and performance.</p>
         </div>
-        <Link 
-          href="/merchant/transactions" 
+        <Link
+          href="/merchant/transactions"
           className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-600 transition-colors shadow-sm"
         >
           View Transactions
@@ -158,7 +158,7 @@ export default function MerchantDashboard() {
             </Link>
           </div>
         </div>
-        
+
         <div className="premium-card rounded-xl p-6 flex flex-col items-center justify-center text-center min-h-[200px]">
           <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
             <Clock className="w-6 h-6 text-slate-400" />

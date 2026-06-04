@@ -94,6 +94,7 @@ export default function AdminMerchantsPage() {
   useEffect(() => {
     // Use robust socket connection options
     const socket = io(API_URL, {
+      transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
@@ -247,7 +248,12 @@ export default function AdminMerchantsPage() {
     setIsInviting(true);
     try {
       // Use socket for creation as requested
-      const socket = io(API_URL);
+      const socket = io(API_URL, {
+        transports: ['websocket'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000
+      });
       socket.emit('admin_create_invite', inviteData);
 
       // We don't wait for acknowledgment here as the socket listener in useEffect will handle the UI update

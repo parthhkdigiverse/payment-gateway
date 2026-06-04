@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  CreditCard, 
-  Users, 
-  Key, 
-  Settings, 
+import {
+  LayoutDashboard,
+  CreditCard,
+  Users,
+  Key,
+  Settings,
   RotateCcw,
   Search,
   Bell,
@@ -40,7 +40,7 @@ export default function MerchantLayout({
   const [showNotifications, setShowNotifications] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
   const { isLoggedIn, userEmail, logout, isAuthChecking } = useAuth();
-  
+
   const { isBackendOnline, isCheckingHealth, checkHealth } = useConnectivity();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [activeToast, setActiveToast] = useState<{ id: any; title: string; description: string; type: 'success' | 'warning' | 'info'; redirect_url?: string } | null>(null);
@@ -108,7 +108,7 @@ export default function MerchantLayout({
       if (data.type !== 'UTR_SUBMITTED') {
         setActiveToast(newNotification);
       }
-      
+
       // Auto-dismiss toast by changing time after 8 seconds
       setTimeout(() => {
         setNotifications(prev => prev.map(n => n.id === newNotification.id ? { ...n, time: '1 min ago' } : n));
@@ -183,7 +183,7 @@ export default function MerchantLayout({
     <div className="flex h-screen bg-surface">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -199,28 +199,27 @@ export default function MerchantLayout({
             <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-white font-bold">P</div>
             <span className="text-xl font-bold tracking-tight text-secondary">PayFlow</span>
           </div>
-          <button 
+          <button
             className="md:hidden p-1 text-muted hover:text-secondary"
             onClick={() => setIsSidebarOpen(false)}
           >
             <X className="w-6 h-6" />
           </button>
         </div>
-        
+
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {menuItems.map((item) => {
             const isActive = item.href === '/merchant' ? pathname === '/merchant' : pathname?.startsWith(item.href);
-            
+
             return (
-              <Link 
+              <Link
                 key={item.label}
-                href={item.href} 
+                href={item.href}
                 onClick={() => setIsSidebarOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive 
-                    ? 'bg-primary text-white shadow-sm' 
+                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                    ? 'bg-primary text-white shadow-sm'
                     : 'text-muted hover:bg-slate-50 hover:text-secondary focus:bg-blue-50 focus:text-primary'
-                }`}
+                  }`}
               >
                 <item.icon className="w-4 h-4" />
                 {item.label}
@@ -228,7 +227,7 @@ export default function MerchantLayout({
             );
           })}
         </nav>
-        
+
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3 px-3 py-2 mb-2">
             <div className={`w-2 h-2 rounded-full mr-1 ${isBackendOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
@@ -237,7 +236,7 @@ export default function MerchantLayout({
               <p className="text-[10px] text-muted truncate">{isBackendOnline ? 'Operational' : 'System Offline'}</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
           >
@@ -252,25 +251,25 @@ export default function MerchantLayout({
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-border flex items-center justify-between px-4 md:px-8 shrink-0">
           <div className="flex items-center gap-4 flex-1">
-            <button 
+            <button
               className="md:hidden p-2 text-muted hover:text-secondary"
               onClick={() => setIsSidebarOpen(true)}
             >
               <Menu className="w-6 h-6" />
             </button>
-            
+
             <form onSubmit={handleSearch} className="relative w-full max-w-md hidden sm:block">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-              <input 
-                type="text" 
-                placeholder="Search transactions..." 
+              <input
+                type="text"
+                placeholder="Search transactions..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </form>
           </div>
-          
+
           <div className="flex items-center gap-2 md:gap-4 relative">
             {/* Wallet Balance */}
             <div className="hidden sm:flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 shadow-sm transition-all hover:shadow-md">
@@ -278,14 +277,9 @@ export default function MerchantLayout({
               <span className="text-sm font-black text-emerald-700">₹{walletBalance.toFixed(2)}</span>
             </div>
 
-            {/* Connectivity Status Mini */}
-            <div className={`hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border ${isBackendOnline ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-red-100 bg-red-50 text-red-700'}`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${isBackendOnline ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-              <span className="text-[10px] font-bold uppercase tracking-wider">{isBackendOnline ? 'Online' : 'Offline'}</span>
-            </div>
 
             <div className="relative">
-              <button 
+              <button
                 onClick={() => { setShowNotifications(!showNotifications); setShowHelpCenter(false); }}
                 className={`p-2 rounded-lg transition-colors relative ${showNotifications ? 'bg-primary/10 text-primary' : 'text-muted hover:text-secondary'}`}
               >
@@ -301,7 +295,7 @@ export default function MerchantLayout({
                       {notifications.filter(n => !n.read).length} NEW
                     </span>
                   </div>
-                  
+
                   <div className="max-h-80 overflow-y-auto">
                     {notifications.length === 0 ? (
                       <div className="py-8 text-center">
@@ -313,12 +307,12 @@ export default function MerchantLayout({
                       </div>
                     ) : (
                       notifications.map(notif => (
-                        <div 
+                        <div
                           key={notif.id}
                           className={`px-4 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer relative ${!notif.read ? 'bg-blue-50/20' : ''}`}
                           onClick={() => {
                             if (notif.redirect_url) router.push(notif.redirect_url);
-                            setNotifications(prev => prev.map(n => n.id === notif.id ? {...n, read: true} : n));
+                            setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
                             setShowNotifications(false);
                           }}
                         >
@@ -335,9 +329,9 @@ export default function MerchantLayout({
             </div>
 
             <div className="h-8 w-px bg-border mx-1 md:mx-2" />
-            
+
             <div className="relative">
-              <button 
+              <button
                 onClick={() => { setShowHelpCenter(!showHelpCenter); setShowNotifications(false); }}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${showHelpCenter ? 'bg-primary/10 text-primary' : 'text-secondary hover:bg-slate-50'}`}
               >
@@ -348,14 +342,14 @@ export default function MerchantLayout({
               {showHelpCenter && (
                 <div className="absolute right-0 mt-2 w-56 bg-white border border-border shadow-2xl rounded-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-2 space-y-1">
-                    <Link 
+                    <Link
                       href="/test"
                       onClick={() => setShowHelpCenter(false)}
                       className="w-full text-left px-3 py-2 text-xs font-bold text-secondary hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-2"
                     >
                       <FileText className="w-3.5 h-3.5 text-primary" /> Documentation
                     </Link>
-                    <Link 
+                    <Link
                       href="/contact"
                       onClick={() => setShowHelpCenter(false)}
                       className="w-full text-left px-3 py-2 text-xs font-bold text-secondary hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-2"
@@ -366,9 +360,9 @@ export default function MerchantLayout({
                     <div className="px-3 py-2">
                       <p className="text-[9px] font-bold text-muted uppercase tracking-wider">Quick Search</p>
                       <form onSubmit={(e) => { e.preventDefault(); setShowHelpCenter(false); router.push('/merchant/transactions'); }}>
-                        <input 
-                          type="text" 
-                          placeholder="Search docs..." 
+                        <input
+                          type="text"
+                          placeholder="Search docs..."
                           className="w-full mt-2 px-2 py-1.5 bg-slate-50 border border-border rounded-md text-[10px] focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </form>
@@ -383,10 +377,10 @@ export default function MerchantLayout({
         {/* Dynamic Content */}
         <div className="flex-1 flex flex-col min-h-0 w-full relative">
 
-          <ConnectivityBanner 
-            isOnline={isBackendOnline} 
-            isChecking={isCheckingHealth} 
-            onRetry={checkHealth} 
+          <ConnectivityBanner
+            isOnline={isBackendOnline}
+            isChecking={isCheckingHealth}
+            onRetry={checkHealth}
           />
           <div className="flex-1 overflow-y-auto">
             {children}
@@ -395,21 +389,20 @@ export default function MerchantLayout({
           {/* Floating Toast Notification */}
           {activeToast && (
             <div className="fixed bottom-6 right-6 z-[9999] max-w-sm w-full bg-slate-900 text-white rounded-2xl shadow-2xl border border-white/10 p-4 flex gap-3 items-start animate-in slide-in-from-bottom-5 fade-in duration-300">
-              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                activeToast.type === 'success' ? 'bg-green-500/20 text-green-400' :
-                activeToast.type === 'warning' ? 'bg-amber-500/20 text-amber-400' :
-                'bg-blue-500/20 text-blue-400'
-              }`}>
+              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${activeToast.type === 'success' ? 'bg-green-500/20 text-green-400' :
+                  activeToast.type === 'warning' ? 'bg-amber-500/20 text-amber-400' :
+                    'bg-blue-500/20 text-blue-400'
+                }`}>
                 {activeToast.type === 'success' ? <CheckCircle className="w-4 h-4" /> :
-                 activeToast.type === 'warning' ? <AlertCircle className="w-4 h-4" /> :
-                 <Info className="w-4 h-4" />}
+                  activeToast.type === 'warning' ? <AlertCircle className="w-4 h-4" /> :
+                    <Info className="w-4 h-4" />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-white leading-tight">{activeToast.title}</p>
                 <p className="text-[11px] text-slate-300 mt-0.5 leading-relaxed break-all select-all">{activeToast.description}</p>
                 {activeToast.redirect_url && (
-                  <Link 
-                    href={activeToast.redirect_url} 
+                  <Link
+                    href={activeToast.redirect_url}
                     onClick={() => setActiveToast(null)}
                     className="inline-flex items-center gap-1 text-[10px] font-bold text-primary hover:underline mt-2"
                   >
@@ -417,7 +410,7 @@ export default function MerchantLayout({
                   </Link>
                 )}
               </div>
-              <button 
+              <button
                 onClick={() => setActiveToast(null)}
                 className="p-1 hover:bg-white/10 rounded-md transition-colors text-slate-400 hover:text-white"
               >

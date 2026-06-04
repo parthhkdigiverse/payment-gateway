@@ -518,8 +518,8 @@ export default function AdminPaymentsPage() {
   useEffect(() => {
     fetchPayments();
 
-    // Use robust socket connection options
     const socket = io(API_URL, {
+      transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
