@@ -227,12 +227,14 @@ export default function PaymentPagesPage() {
   };
 
   const handleOpenCheckout = (id: string, checkoutUrl?: string) => {
-    const url = checkoutUrl || `/checkout/${id}`;
+    // Use relative path to ensure the checkout page opens on the currently running origin and port
+    const url = `/checkout/${id}`;
     window.open(url, '_blank');
   };
 
   const handleCopyLink = (paymentId: string, checkoutUrl?: string) => {
-    const url = checkoutUrl || `${window.location.origin}/checkout/${paymentId}`;
+    // Generate the copied link dynamically using the current active origin
+    const url = `${window.location.origin}/checkout/${paymentId}`;
     navigator.clipboard.writeText(url);
     setCopiedId(paymentId);
     setTimeout(() => setCopiedId(null), 2000);

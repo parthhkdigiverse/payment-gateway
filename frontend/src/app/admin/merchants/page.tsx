@@ -657,7 +657,12 @@ export default function AdminMerchantsPage() {
                   >
                     Active Merchants
                   </button>
-
+                  <button
+                    onClick={() => { setFilterType('pending'); setShowFilterMenu(false); }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 ${filterType === 'pending' ? 'bg-blue-50 text-primary font-bold' : 'text-secondary'}`}
+                  >
+                    Pending Inquiries
+                  </button>
                   <button
                     onClick={() => { setFilterType('invited'); setShowFilterMenu(false); }}
                     className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 ${filterType === 'invited' ? 'bg-blue-50 text-primary font-bold' : 'text-secondary'}`}
@@ -781,7 +786,7 @@ export default function AdminMerchantsPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-50 stagger-entry">
                   {paginatedUnifiedList.map((item, index) => (
-                    <tr key={`${item.category}-${item.email || item.merchant_id || index}`} className="hover:bg-slate-50/50 transition-colors group">
+                    <tr key={`${item.category}-${item.email || item.merchant_id || ''}-${index}`} className="hover:bg-slate-50/50 transition-colors group">
                       <td className="pl-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${item.color.split(' ')[1]} ${item.color.split(' ')[0]}`}>
@@ -876,7 +881,7 @@ export default function AdminMerchantsPage() {
                   </thead>
                   <tbody>
                     {paginatedConverted.map((u, index) => (
-                      <tr key={u.email || `converted-${index}`} className={`hover:bg-slate-50 transition-colors ${checkedMerchants.has(u.email) ? 'bg-green-50/30' : ''}`}>
+                      <tr key={`${u.email || 'converted'}-${index}`} className={`hover:bg-slate-50 transition-colors ${checkedMerchants.has(u.email) ? 'bg-green-50/30' : ''}`}>
                         <td className="py-4 pl-4">
                           <button onClick={() => toggleCheck(u.email)} className="text-muted hover:text-green-600">
                             {checkedMerchants.has(u.email) ? <CheckSquare className="w-4 h-4 text-green-600" /> : <Square className="w-4 h-4" />}
@@ -940,6 +945,106 @@ export default function AdminMerchantsPage() {
                 setItemsPerPage={setItemsPerPageConverted}
                 totalItems={filteredActivated.length}
                 label="converted inquiries"
+              />
+            </div>
+          )}
+
+          {/* Section 3: Pending Onboarding Requests */}
+          {(filterType === 'all' || filterType === 'pending') && (
+            <div className="premium-card rounded-xl overflow-hidden border-t-4 border-t-yellow-500 shadow-sm">
+              <div className="px-6 py-4 border-b border-border bg-yellow-50/30 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-secondary uppercase tracking-wider flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-yellow-500" /> Pending Inquiries
+                </h3>
+                <div className="flex items-center gap-4">
+                  <span className="text-[10px] font-bold text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full uppercase">Waiting for Password</span>
+                  <button
+                    onClick={() => toggleCheckAll(filteredPending)}
+                    className="text-[10px] font-bold text-muted hover:text-yellow-600 flex items-center gap-1"
+                  >
+                    {filteredPending.length > 0 && filteredPending.every(inq => checkedMerchants.has(inq.email)) ? <CheckSquare className="w-3 h-3 text-yellow-600" /> : <Square className="w-3 h-3" />}
+                    Select All
+                  </button>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full high-density-table text-left">
+                  <thead>
+                    <tr className="bg-slate-50/30">
+                      <th className="w-10"></th>
+                      <th className="w-12">SR.</th>
+                      <th>Full Name</th>
+                      <th>Username</th>
+                      <th>Contact Info</th>
+                      <th>Received</th>
+                      <th className="text-right pr-6">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedPending.map((inq, index) => (
+                      <tr key={`pending-${inq.email || ''}-${index}`} className={`hover:bg-slate-50 transition-colors align-middle ${checkedMerchants.has(inq.email) ? 'bg-yellow-50/30' : ''}`}>
+                        <td className="py-4 pl-4">
+                          <button onClick={() => toggleCheck(inq.email)} className="text-muted hover:text-yellow-600">
+                            {checkedMerchants.has(inq.email) ? <CheckSquare className="w-4 h-4 text-yellow-600" /> : <Square className="w-4 h-4" />}
+                          </button>
+                        </td>
+                        <td className="text-xs font-bold text-muted py-4">{(inq as any).sr}</td>
+                        <td className="py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-muted">
+                              <User className="w-4 h-4" />
+                            </div>
+                            <span className="font-bold text-secondary">{inq.name}</span>
+                          </div>
+                        </td>
+                        <td className="font-mono text-xs text-primary py-4">{inq.username}</td>
+                        <td className="py-4">
+                          <p className="text-xs text-secondary">{inq.email}</p>
+                          <p className="text-[10px] text-muted">{inq.phone}</p>
+                        </td>
+                        <td className="text-xs text-muted py-4">{inq.date}</td>
+                        <td className="py-4 text-right pr-6">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => setSelectedMerchant(inq)}
+                              className="p-1.5 text-muted hover:text-primary transition-colors"
+                              title="View Details"
+                            >
+                              <ChevronRight className="w-4 h-4" />
+                            </button>
+                            <Link
+                              href={`/admin/merchants/set-password/${inq.inquiry_id || inq.id}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-md text-[10px] font-bold hover:bg-blue-700 transition-colors"
+                            >
+                              <Key className="w-3 h-3" /> Set Password
+                            </Link>
+                            <button
+                              onClick={() => handleDelete(inq.email, 'PENDING')}
+                              className="p-1.5 text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                              title="Remove Inquiry"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {paginatedPending.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="py-8 text-center text-muted italic">No pending inquiries.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <PaginationControls
+                currentPage={currentPagePending}
+                totalPages={Math.ceil(filteredPending.length / (itemsPerPagePending === -1 ? 1 : itemsPerPagePending))}
+                setCurrentPage={setCurrentPagePending}
+                itemsPerPage={itemsPerPagePending}
+                setItemsPerPage={setItemsPerPagePending}
+                totalItems={filteredPending.length}
+                label="pending inquiries"
               />
             </div>
           )}
@@ -1174,6 +1279,7 @@ export default function AdminMerchantsPage() {
                     type="number"
                     value={inviteData.amount}
                     onChange={(e) => setInviteData({ ...inviteData, amount: e.target.value })}
+                    onWheel={(e) => e.currentTarget.blur()}
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
                     placeholder="0.00"
                   />
@@ -1375,6 +1481,7 @@ export default function AdminMerchantsPage() {
                         type="number"
                         value={createData.wallet_balance}
                         onChange={(e) => setCreateData({ ...createData, wallet_balance: parseFloat(e.target.value) || 0 })}
+                        onWheel={(e) => e.currentTarget.blur()}
                         className="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
                         placeholder="0.00"
                       />

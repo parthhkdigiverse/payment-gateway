@@ -1602,7 +1602,7 @@ async def delete_merchant_customer(customer_id: str, current_user: dict = Depend
     email_regex = {"$regex": f"^{re.escape(email)}$", "$options": "i"}
     
     result = await db.customers.delete_one({"id": customer_id, "merchant_email": email_regex})
-    
+     
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Customer not found or not owned by current merchant")
         

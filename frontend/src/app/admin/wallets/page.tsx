@@ -270,6 +270,7 @@ export default function WalletsPage() {
                     type="number"
                     value={amountToAdd}
                     onChange={(e) => setAmountToAdd(e.target.value)}
+                    onWheel={(e) => e.currentTarget.blur()}
                     className="w-full pl-8 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base font-bold text-secondary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
                     placeholder="0.00"
                     min="0.01"
@@ -283,8 +284,7 @@ export default function WalletsPage() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 py-2.5 bg-slate-100 text-secondary rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors"
-                >
+                  className="flex-1 py-2.5 bg-slate-100 text-secondary rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">
                   Cancel
                 </button>
                 <button

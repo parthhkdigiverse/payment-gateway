@@ -54,7 +54,7 @@ function ActionMenu({ pageId, qrLink, cfUpiLink, checkoutUrl, onOpenCheckout }: 
   }, []);
 
   const handleCopy = () => {
-    const url = checkoutUrl || `${window.location.origin}/checkout/${pageId}`;
+    const url = `${window.location.origin}/checkout/${pageId}`;
     navigator.clipboard.writeText(url);
     alert("Link copied to clipboard!");
     setIsOpen(false);
@@ -210,7 +210,7 @@ export default function AdminTransactionsPage() {
   }, []);
 
   const handleOpenCheckout = (id: string, checkoutUrl?: string) => {
-    const url = checkoutUrl || `/checkout/${id}`;
+    const url = `/checkout/${id}`;
     window.open(url, '_blank');
   };
 

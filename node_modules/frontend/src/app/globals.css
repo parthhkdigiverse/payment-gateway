@@ -175,8 +175,13 @@ body {
   animation-delay: 0.3s;
 }
 
-.stagger-entry > *:nth-child(4) { animation-delay: 0.4s; }
-.stagger-entry > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-entry>*:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.stagger-entry>*:nth-child(5) {
+  animation-delay: 0.5s;
+}
 
 /* Gradient text sweep */
 .gradient-text {
@@ -189,8 +194,13 @@ body {
 }
 
 @keyframes gradient-sweep {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* Marquee / ticker */
@@ -199,21 +209,28 @@ body {
   width: max-content;
   animation: marquee 120s linear infinite;
 }
+
 .marquee-track:hover {
   animation-play-state: paused;
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* Glow pulse on cards */
 .glow-hover {
   transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
+
 .glow-hover:hover {
-  box-shadow: 0 0 0 2px rgba(79,70,229,0.15), 0 20px 40px rgba(79,70,229,0.12);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15), 0 20px 40px rgba(79, 70, 229, 0.12);
   transform: translateY(-6px);
 }
 
@@ -229,6 +246,7 @@ body {
   border: 1px solid transparent;
   background-clip: padding-box;
 }
+
 .border-beam::before {
   content: '';
   position: absolute;
@@ -242,24 +260,67 @@ body {
   mask-composite: exclude;
   animation: beam-rotate 3s linear infinite;
 }
+
 @keyframes beam-rotate {
-  to { --beam-angle: 360deg; }
+  to {
+    --beam-angle: 360deg;
+  }
 }
 
 /* Slide-up for each stat */
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.slide-up { animation: slide-up 0.7s cubic-bezier(0.16,1,0.3,1) both; }
-.slide-up-1 { animation-delay: 0.1s; }
-.slide-up-2 { animation-delay: 0.25s; }
-.slide-up-3 { animation-delay: 0.4s; }
-.slide-up-4 { animation-delay: 0.55s; }
+
+.slide-up {
+  animation: slide-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.slide-up-1 {
+  animation-delay: 0.1s;
+}
+
+.slide-up-2 {
+  animation-delay: 0.25s;
+}
+
+.slide-up-3 {
+  animation-delay: 0.4s;
+}
+
+.slide-up-4 {
+  animation-delay: 0.55s;
+}
 
 /* Spin slow */
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
-.animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Hide spin-button arrows on inputs of type number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
