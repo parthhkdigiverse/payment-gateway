@@ -5,6 +5,7 @@ import string
 import json
 import random
 import urllib.parse
+import re
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Depends, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -798,14 +799,16 @@ async def delete_merchant(email: str, current_user: dict = Depends(get_current_u
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     db = get_database()
-    email_regex = {"$regex": f"^{email.replace('.', '\\.')}$", "$options": "i"}
+    email_regex = {"$regex": f"^{re.escape(email)}$", "$options": "i"}
     
-    # Aggressively delete from both collections to ensure full removal
-    m_res = await db.merchants.delete_one({"email": email_regex})
-    s_res = await db.sign_ups.delete_one({"email": email_regex})
+    # Aggressively delete from all collections to ensure full removal
+    m_res = await db.merchants.delete_many({"email": email_regex})
+    s_res = await db.sign_ups.delete_many({"email": email_regex})
+    i_res = await db.invites.delete_many({"email": email_regex})
+    await db.sessions.delete_many({"email": email_regex})
     
-    if m_res.deleted_count == 0 and s_res.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Merchant or inquiry not found")
+    if m_res.deleted_count == 0 and s_res.deleted_count == 0 and i_res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Merchant, inquiry, or invite not found")
     
     # Notify via socket
     await sio.emit("admin_notification", {
@@ -821,8 +824,8 @@ async def delete_inquiry(email: str, current_user: dict = Depends(get_current_us
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     db = get_database()
-    email_regex = {"$regex": f"^{email.replace('.', '\\.')}$", "$options": "i"}
-    res = await db.sign_ups.delete_one({"email": email_regex})
+    email_regex = {"$regex": f"^{re.escape(email)}$", "$options": "i"}
+    res = await db.sign_ups.delete_many({"email": email_regex})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Inquiry not found")
     return {"status": "success", "message": "Inquiry deleted successfully"}
@@ -832,8 +835,8 @@ async def delete_invite(email: str, current_user: dict = Depends(get_current_use
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     db = get_database()
-    email_regex = {"$regex": f"^{email.replace('.', '\\.')}$", "$options": "i"}
-    res = await db.invites.delete_one({"email": email_regex})
+    email_regex = {"$regex": f"^{re.escape(email)}$", "$options": "i"}
+    res = await db.invites.delete_many({"email": email_regex})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Invite not found")
     return {"status": "success", "message": "Invite deleted successfully"}
@@ -846,7 +849,7 @@ async def create_ticket(ticket: SupportTicket, current_user: dict = Depends(get_
     ticket_data = ticket.dict()
     ticket_data["id"] = f"TKT-{random.randint(1000, 9999)}"
     ticket_data["created"] = datetime.now().strftime("%Y-%m-%d %H:%M")
-    
+
     merchant_name = ticket.merchant
     merchant = await db.merchants.find_one({
         "$or": [
@@ -855,7 +858,7 @@ async def create_ticket(ticket: SupportTicket, current_user: dict = Depends(get_
             {"username": {"$regex": f"^{merchant_name}$", "$options": "i"}}
         ]
     })
-    
+
     if merchant:
         ticket_data["user_id"] = await get_db_user_id_for_email(db, merchant["email"])
     else:
@@ -904,7 +907,7 @@ async def get_admin_stats(current_user: dict = Depends(get_current_user)):
             total_volume += float(amount_str)
         except:
             pass
-            
+          
     # Format volume for display (e.g., ₹1.2M or ₹500K)
     if total_volume >= 1000000:
         formatted_volume = f"₹{total_volume/1000000:.1f}M"
@@ -970,19 +973,19 @@ async def get_merchant_stats(current_user: dict = Depends(get_current_user)):
     
     email_regex = {"$regex": f"^{email.replace('.', '\\.')}$", "$options": "i"}
     query = {} if current_user.get("role") == "admin" else {"email": email_regex}
-    
+
     current_time = datetime.now().timestamp()
     thirty_days_ago = current_time - (30 * 24 * 60 * 60)
     sixty_days_ago = current_time - (60 * 24 * 60 * 60)
-    
+
     total_volume = 0
     success_count = 0
-    
+
     current_volume = 0
     previous_volume = 0
     current_success = 0
     previous_success = 0
-    
+
     async for payment in db.payments.find(query):
         amount_str = str(payment.get("amount", "0")).replace('₹', '').replace(',', '')
         try:
@@ -1326,9 +1329,9 @@ async def process_merchant_withdrawal(request: WithdrawRequest, current_user: di
         "gateway_error": error_message if not payout_success else None,
         "transfer_id": transfer_id
     }
-    if request.remarks:
-        settlement_record["remarks"] = request.remarks
-    await db.withdrawals.insert_one(settlement_record)
+    # if request.remarks:
+    #     settlement_record["remarks"] = request.remarks
+    # await db.withdrawals.insert_one(settlement_record)
     
     # Broadcast update to both admin and merchant panels
     try:

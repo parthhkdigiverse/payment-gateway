@@ -114,7 +114,7 @@ export default function AdminLayout({
       setTimeout(() => {
         setNotifications(prev => prev.map(n => n.id === newNotif.id ? { ...n, time: '1 min ago' } : n));
       }, 8000);
-      
+
       // Auto-dismiss visual toast popup after 8 seconds
       setTimeout(() => {
         setActiveToast(current => current?.id === newNotif.id ? null : current);
@@ -200,13 +200,13 @@ export default function AdminLayout({
           <div>
             <h1 className="text-2xl font-bold text-secondary mb-2">Access Restricted</h1>
             <p className="text-sm text-muted">
-              {!isLoggedIn 
+              {!isLoggedIn
                 ? "You must be logged in as an administrator to access this panel."
                 : "Your account does not have administrator privileges."}
             </p>
           </div>
-          <Link 
-            href="/admin/login" 
+          <Link
+            href="/admin/login"
             className="px-6 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-200 flex items-center gap-2"
           >
             Go to Admin Login <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
@@ -254,8 +254,8 @@ export default function AdminLayout({
                 href={item.href}
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 group ${isActive
-                    ? 'bg-primary text-white shadow-md shadow-emerald-100 scale-[1.02]'
-                    : 'text-muted hover:bg-slate-50 hover:text-secondary focus:bg-emerald-50 focus:text-primary hover:translate-x-1'
+                  ? 'bg-primary text-white shadow-md shadow-emerald-100 scale-[1.02]'
+                  : 'text-muted hover:bg-slate-50 hover:text-secondary focus:bg-emerald-50 focus:text-primary hover:translate-x-1'
                   }`}
               >
                 <item.icon className={`w-4 h-4 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
@@ -301,8 +301,8 @@ export default function AdminLayout({
 
           <div className="flex items-center gap-2 md:gap-6">
             <div className="hidden lg:flex items-center gap-2 text-[10px] font-bold text-muted uppercase tracking-wider">
-              <Globe className={`w-3.5 h-3.5 ${isBackendOnline ? 'text-primary' : 'text-red-500'}`} />
-              <span>Nodes: {isBackendOnline ? '24/24' : '0/24'} Active</span>
+              {/* <Globe className={`w-3.5 h-3.5 ${isBackendOnline ? 'text-primary' : 'text-red-500'}`} />
+              <span>Nodes: {isBackendOnline ? '24/24' : '0/24'} Active</span> */}
             </div>
             <div className="hidden lg:block h-8 w-px bg-border mx-1 md:mx-2" />
 
@@ -335,8 +335,8 @@ export default function AdminLayout({
                         {!notification.read && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />}
                         <div className="flex gap-3">
                           <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${notification.type === 'success' ? 'bg-green-100 text-green-600' :
-                              notification.type === 'warning' ? 'bg-amber-100 text-amber-600' :
-                                'bg-blue-100 text-blue-600'
+                            notification.type === 'warning' ? 'bg-amber-100 text-amber-600' :
+                              'bg-blue-100 text-blue-600'
                             }`}>
                             {notification.type === 'success' ? <CheckCircle className="w-4 h-4" /> :
                               notification.type === 'warning' ? <AlertCircle className="w-4 h-4" /> :
@@ -394,10 +394,10 @@ export default function AdminLayout({
         {/* Dynamic Content */}
         <div className="flex-1 flex flex-col min-h-0 w-full relative">
 
-          <ConnectivityBanner 
-            isOnline={isBackendOnline} 
-            isChecking={isCheckingHealth} 
-            onRetry={checkHealth} 
+          <ConnectivityBanner
+            isOnline={isBackendOnline}
+            isChecking={isCheckingHealth}
+            onRetry={checkHealth}
           />
           <div className="flex-1 overflow-y-auto">
             {children}
@@ -406,21 +406,20 @@ export default function AdminLayout({
           {/* Floating Toast Notification */}
           {activeToast && (
             <div className="fixed bottom-6 right-6 z-[9999] max-w-sm w-full bg-slate-900 text-white rounded-2xl shadow-2xl border border-white/10 p-4 flex gap-3 items-start animate-in slide-in-from-bottom-5 fade-in duration-300">
-              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                activeToast.type === 'success' ? 'bg-green-500/20 text-green-400' :
+              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${activeToast.type === 'success' ? 'bg-green-500/20 text-green-400' :
                 activeToast.type === 'warning' ? 'bg-amber-500/20 text-amber-400' :
-                'bg-blue-500/20 text-blue-400'
-              }`}>
+                  'bg-blue-500/20 text-blue-400'
+                }`}>
                 {activeToast.type === 'success' ? <CheckCircle className="w-4 h-4" /> :
-                 activeToast.type === 'warning' ? <AlertCircle className="w-4 h-4" /> :
-                 <Info className="w-4 h-4" />}
+                  activeToast.type === 'warning' ? <AlertCircle className="w-4 h-4" /> :
+                    <Info className="w-4 h-4" />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-white leading-tight">{activeToast.title}</p>
                 <p className="text-[11px] text-slate-300 mt-0.5 leading-relaxed break-all select-all">{activeToast.description}</p>
                 {activeToast.redirect_url && (
-                  <Link 
-                    href={activeToast.redirect_url} 
+                  <Link
+                    href={activeToast.redirect_url}
                     onClick={() => setActiveToast(null)}
                     className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 hover:underline mt-2"
                   >
@@ -428,7 +427,7 @@ export default function AdminLayout({
                   </Link>
                 )}
               </div>
-              <button 
+              <button
                 onClick={() => setActiveToast(null)}
                 className="p-1 hover:bg-white/10 rounded-md transition-colors text-slate-400 hover:text-white"
               >
